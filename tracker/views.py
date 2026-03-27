@@ -4,8 +4,10 @@ from .models import Habit
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 def home(request):
     return render(request, 'index.html')
+
 
 @csrf_exempt
 def add_habit(request):
@@ -69,7 +71,7 @@ def update_habit(request, id):
     return JsonResponse({"status": "fail", "error": "Invalid request method"})
 
 
-# ✅ DASHBOARD VIEW (NEW)
+# DASHBOARD
 def dashboard_data(request):
     total = Habit.objects.count()
     completed = Habit.objects.filter(completed=True).count()

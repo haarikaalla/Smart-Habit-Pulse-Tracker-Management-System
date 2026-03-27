@@ -10,7 +10,7 @@
 
     <h2 class="text-center mb-4 text-primary">✨ HabitPulse Tracker</h2>
 
-    <!--  DASHBOARD -->
+    <!-- DASHBOARD -->
     <div class="row text-center mb-4">
         <div class="col">
             <div class="card p-3 bg-primary text-white">
@@ -32,23 +32,23 @@
         </div>
     </div>
 
-    <!-- Input -->
+    <!-- ADD HABIT -->
     <div class="card p-3 mb-3">
         <input type="text" id="habitInput" class="form-control mb-2" placeholder="Enter habit">
         <button id="addBtn" class="btn btn-primary">Add Habit</button>
     </div>
 
-    <!-- Message -->
+    <!-- MESSAGE -->
     <div id="messageBox" class="text-center mb-3"></div>
 
-    <!-- Filters -->
+    <!-- FILTERS -->
     <div class="mb-3 text-center">
         <button class="btn btn-secondary filterBtn active" data-filter="all">All</button>
         <button class="btn btn-success filterBtn" data-filter="completed">Completed</button>
         <button class="btn btn-warning filterBtn" data-filter="pending">Pending</button>
     </div>
 
-    <!-- Habit List -->
+    <!-- HABIT LIST -->
     <div id="habitList" class="list-group"></div>
 
 </div>
@@ -58,7 +58,7 @@
 
 let currentFilter = "all";
 
-//  LOAD DASHBOARD
+// DASHBOARD
 function loadDashboard() {
     $.get("/api/dashboard/", function(data) {
         $("#totalCount").text(data.total);
@@ -67,7 +67,7 @@ function loadDashboard() {
     });
 }
 
-// Load habits
+// LOAD HABITS
 function loadHabits() {
     $.get("/api/habits/", function(data) {
         $("#habitList").empty();
@@ -108,7 +108,7 @@ $(document).ready(function() {
     loadHabits();
     loadDashboard();
 
-    // Add habit
+    // ADD HABIT
     $("#addBtn").click(function() {
         let habitName = $("#habitInput").val().trim();
 
@@ -127,13 +127,13 @@ $(document).ready(function() {
                     $("#habitInput").val("");
                     $("#messageBox").html('<div class="alert alert-success">Habit added!</div>');
                     loadHabits();
-                    loadDashboard(); //  update dashboard
+                    loadDashboard();
                 }
             }
         });
     });
 
-    // Filters
+    // FILTER
     $(".filterBtn").click(function() {
         currentFilter = $(this).data("filter");
         $(".filterBtn").removeClass("active");
@@ -141,7 +141,7 @@ $(document).ready(function() {
         loadHabits();
     });
 
-    // Complete
+    // COMPLETE
     $(document).on("change", ".completeCheckbox", function() {
         let id = $(this).data("id");
         let completed = $(this).is(":checked");
@@ -153,12 +153,12 @@ $(document).ready(function() {
             contentType: "application/json",
             success: function() {
                 loadHabits();
-                loadDashboard(); // update dashboard
+                loadDashboard();
             }
         });
     });
 
-    // Delete
+    // DELETE
     $(document).on("click", ".deleteBtn", function() {
         let id = $(this).data("id");
 
@@ -168,7 +168,7 @@ $(document).ready(function() {
             success: function() {
                 $("#messageBox").html('<div class="alert alert-danger">Habit deleted!</div>');
                 loadHabits();
-                loadDashboard(); //  update dashboard
+                loadDashboard();
             }
         });
     });

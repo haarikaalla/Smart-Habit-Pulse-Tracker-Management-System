@@ -1,1 +1,25 @@
+# Python cache and compiled files
+__pycache__/
+*.pyc
+
+# SQLite database (if present)
+db.sqlite3
+
+# Django migrations (optional to ignore, but can be kept)
+# */migrations/*.py
+# */migrations/*.pyc
+
+# VSCode settings
+.vscode/
+
+# Environment variables and secrets
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
 

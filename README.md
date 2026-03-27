@@ -1,5 +1,4 @@
 # Smart-Habit-Pulse-Tracker-Management-System
-# Smart Habit Pulse Tracker Management System
 
 A full-stack web application built using Django that helps users track, manage, and monitor their daily habits efficiently. The system supports real-time updates using AJAX and follows RESTful API principles.
 

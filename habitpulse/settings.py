@@ -75,18 +75,16 @@ WSGI_APPLICATION = 'habitpulse.wsgi.application'
 
 
 import os
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'habitpulse_db',
-        'USER': 'habituser',
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'USER': 'root',
+        'PASSWORD': 'inline090',
         'HOST': 'localhost',
         'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

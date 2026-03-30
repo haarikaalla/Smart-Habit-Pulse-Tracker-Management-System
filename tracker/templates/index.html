@@ -1,10 +1,36 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HabitPulse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Habit Pulse Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+    <script>
+        (function () {
+            try {
+                var seen = window.localStorage.getItem("smart_habit_pulse_tracker_intro_seen") === "true";
+                var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                if (!seen && !reduce) {
+                    document.documentElement.classList.add("intro-pending");
+                }
+            } catch (error) {
+                document.documentElement.classList.add("intro-pending");
+            }
+        })();
+    </script>
 </head>
 <body>
+ main
+    <div id="introScreen" class="intro-screen" aria-hidden="true">
+        <div class="intro-panel">
+            <div class="intro-bar">
+                <span>+-- BOOT_SEQUENCE --+</span>
+                <button id="skipIntroBtn" class="terminal-button subtle" type="button">[ SKIP ]</button>
+
 
 
     <div class="container mt-5">
@@ -38,15 +64,57 @@
             <div class="card p-3 bg-success text-white">
                 <h5>Completed</h5>
                 <h3 id="completedCount">0</h3>
+
             </div>
-        </div>
-        <div class="col">
-            <div class="card p-3 bg-warning text-dark">
-                <h5>Pending</h5>
-                <h3 id="pendingCount">0</h3>
+            <div class="intro-body">
+                <pre class="intro-ascii" aria-hidden="true">
+ _   _    _    ____ ___ _____   _____ ____      _    ____ _  _______ ____
+| | | |  / \  | __ )_ _|_   _| |_   _|  _ \    / \  / ___| |/ / ____|  _ \
+| |_| | / _ \ |  _ \| |  | |     | | | |_) |  / _ \| |   | ' /|  _| | |_) |
+|  _  |/ ___ \| |_) | |  | |     | | |  _ <  / ___ \ |___| . \| |___|  _ <
+|_| |_/_/   \_\____/___| |_|     |_| |_| \_\/_/   \_\____|_|\_\_____|_| \_\
+                </pre>
+                <p class="intro-title">
+                    <span class="intro-title-text">SMART HABIT PULSE TRACKER</span>
+                    <span class="intro-title-cursor" aria-hidden="true"></span>
+                </p>
+                <div id="introLog" class="intro-log" aria-live="polite"></div>
+                <div class="intro-progress-shell" aria-hidden="true">
+                    <span class="intro-progress-label">BOOTING</span>
+                    <span id="introProgress" class="intro-progress">[....................]</span>
+                </div>
             </div>
         </div>
     </div>
+
+
+    <div class="screen-shell">
+        <header class="window hero-window">
+            <div class="window-bar">
+                <span>+-- SMART_HABIT_PULSE_TRACKER --+</span>
+                <span class="window-state">[ SESSION ACTIVE ]</span>
+            </div>
+            <div class="window-body hero-layout">
+                <pre class="ascii-logo" aria-hidden="true">
+ _   _    _    ____ ___ _____   _____ ____      _    ____ _  _______ ____
+| | | |  / \  | __ )_ _|_   _| |_   _|  _ \    / \  / ___| |/ / ____|  _ \
+| |_| | / _ \ |  _ \| |  | |     | | | |_) |  / _ \| |   | ' /|  _| | |_) |
+|  _  |/ ___ \| |_) | |  | |     | | |  _ <  / ___ \ |___| . \| |___|  _ <
+|_| |_/_/   \_\____/___| |_|     |_| |_| \_\/_/   \_\____|_|\_\_____|_| \_\
+                </pre>
+                <div class="hero-copy">
+                    <p class="eyebrow">$ smart-habit-pulse-tracker --dashboard</p>
+                    <h1 class="typing-line">
+                        <span class="typing-text">SMART HABIT PULSE TRACKER</span>
+                        <span class="typing-cursor" aria-hidden="true"></span>
+                    </h1>
+                    <p class="hero-summary">
+                        Track daily habits, review progress, and keep your routine organized in one place.
+                    </p>
+                    <div class="hero-tags">
+                        <span>[ HABIT LOG ]</span>
+                        <span>[ DAILY PROGRESS ]</span>
+                        <span>[ QUICK UPDATES ]</span>
 
     <!-- ADD HABIT -->
     <div class="card p-3 mb-3">
@@ -111,122 +179,145 @@ function loadHabits() {
                             ${habit.name}
                         </span>
                         <small class="text-muted ms-2">${habit.created_at}</small>
+
                     </div>
-                    <button class="btn btn-danger btn-sm deleteBtn" data-id="${habit.id}">Delete</button>
                 </div>
-            `);
-        });
+            </div>
+        </header>
 
-        if (visibleCount === 0) {
-            $("#habitList").html('<div class="text-center text-muted">No habits found</div>');
-        }
-    });
-}
+        <main class="dashboard-grid">
+            <section class="primary-column">
+                <section class="window command-window">
+                    <div class="window-bar">
+                        <span>+-- COMMAND_INPUT --+</span>
+                        <span id="systemStatus">[ IDLE ]</span>
+                    </div>
+                    <div class="window-body">
+                        <label class="prompt-row" for="habitInput">
+                            <span class="prompt-label">operator@habitpulse:~$</span>
+                            <div class="input-shell">
+                                <input
+                                    type="text"
+                                    id="habitInput"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                    placeholder="log a habit, e.g. drink water"
+                                    aria-label="Habit name"
+                                >
+                                <span id="inputMirror" class="input-mirror" aria-hidden="true"></span>
+                                <span id="terminalCaret" class="prompt-cursor" aria-hidden="true"></span>
+                            </div>
+                        </label>
 
-// PIE CHART
-function loadChart() {
-    $.get("/api/dashboard/", function(data) {
-        const ctx = document.getElementById('habitChart').getContext('2d');
+                        <div class="command-actions">
+                            <button id="addBtn" class="terminal-button" type="button">[ LOG HABIT ]</button>
+                            <button class="terminal-button filterBtn active" type="button" data-filter="all" aria-pressed="true">[ ALL ]</button>
+                            <button class="terminal-button filterBtn" type="button" data-filter="completed" aria-pressed="false">[ DONE ]</button>
+                            <button class="terminal-button filterBtn" type="button" data-filter="pending" aria-pressed="false">[ TODO ]</button>
+                        </div>
 
-        // Destroy previous chart instance if exists
-        if(window.habitChartInstance) window.habitChartInstance.destroy();
+                        <div id="messageBox" class="message-log" role="status" aria-live="polite">
+                            <span class="message-prefix">[SYS]</span>
+                            <span class="message-text">Ready. Enter a habit to get started.</span>
+                        </div>
+                    </div>
+                </section>
 
-        const pending = data.total - data.completed;
+                <section class="window list-window">
+                    <div class="window-bar">
+                        <span>+-- HABIT_LOG --+</span>
+                        <span id="listMeta">[ 00 ITEMS ]</span>
+                    </div>
+                    <div class="window-body">
+                        <div class="list-header" aria-hidden="true">
+                            <span>STATUS / NAME</span>
+                            <span>TIMESTAMP / ACTION</span>
+                        </div>
+                        <div id="habitList" class="habit-list" role="list"></div>
+                    </div>
+                </section>
 
-        window.habitChartInstance = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Completed', 'Pending'],
-                datasets: [{
-                    data: [data.completed, pending],
-                    backgroundColor: ['#4caf50', '#f44336']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    title: { display: true, text: `Total Habits: ${data.total}` }
-                }
-            }
-        });
-    });
-}
+                <section class="window quote-window">
+                    <div class="window-bar">
+                        <span>+-- DAILY_QUOTE --+</span>
+                        <button id="newQuoteBtn" class="terminal-button subtle" type="button">[ NEW QUOTE ]</button>
+                    </div>
+                    <div class="window-body">
+                        <p class="quote-text" id="quoteText">
+                            <span id="quoteTextValue">"Small steps every day build strong habits over time."</span>
+                            <span id="quoteCursor" class="quote-cursor" aria-hidden="true"></span>
+                        </p>
+                        <p class="quote-author" id="quoteAuthor">- Smart Habit Pulse Tracker</p>
+                    </div>
+                </section>
+            </section>
 
-$(document).ready(function() {
+            <aside class="secondary-column">
+                <section class="window metrics-window">
+                    <div class="window-bar">
+                        <span>+-- SYSTEM_STATUS --+</span>
+                        <span id="lastSync">[ SYNC --:--:-- ]</span>
+                    </div>
+                    <div class="window-body metrics-stack">
+                        <div class="metric-block">
+                            <div class="metric-header">
+                                <span>DB_RECORDS</span>
+                                <strong id="totalCount">00</strong>
+                            </div>
+                            <p class="metric-caption">Total habits currently saved.</p>
+                        </div>
 
-    loadHabits();
-    loadDashboard();
-    loadChart();
+                        <div class="metric-block">
+                            <div class="metric-header">
+                                <span>DONE</span>
+                                <strong id="completedCount">00</strong>
+                            </div>
+                            <div class="metric-bar" id="completedBar">[....................]</div>
+                        </div>
 
-    // ADD HABIT
-    $("#addBtn").click(function() {
-        let habitName = $("#habitInput").val().trim();
-        if(habitName === "") {
-            $("#messageBox").html('<div class="alert alert-warning">Enter a habit!</div>');
-            return;
-        }
-        $.ajax({
-            url: "/add/",
-            type: "POST",
-            data: JSON.stringify({ name: habitName }),
-            contentType: "application/json",
-            success: function(response) {
-                if(response.status === "success") {
-                    $("#habitInput").val("");
-                    $("#messageBox").html('<div class="alert alert-success">Habit added!</div>');
-                    loadHabits();
-                    loadDashboard();
-                    loadChart();
-                }
-            }
-        });
-    });
+                        <div class="metric-block">
+                            <div class="metric-header">
+                                <span>TODO</span>
+                                <strong id="pendingCount">00</strong>
+                            </div>
+                            <div class="metric-bar amber" id="pendingBar">[....................]</div>
+                        </div>
 
-    // FILTER BUTTONS
-    $(".filterBtn").click(function() {
-        currentFilter = $(this).data("filter");
-        $(".filterBtn").removeClass("active");
-        $(this).addClass("active");
-        loadHabits();
-    });
+                        <div class="metric-block">
+                            <div class="metric-header">
+                                <span>SUCCESS_RATE</span>
+                                <strong id="completionRate">00%</strong>
+                            </div>
+                            <p class="metric-caption" id="completionSummary">No habits tracked yet.</p>
+                        </div>
+                    </div>
+                </section>
 
-    // COMPLETE HABIT
-    $(document).on("change", ".completeCheckbox", function() {
-        let id = $(this).data("id");
-        let completed = $(this).is(":checked");
+                <section class="window diagnostics-window">
+                    <div class="window-bar">
+                        <span>+-- OPS_NOTES --+</span>
+                        <span id="activeFilter">[ FILTER ALL ]</span>
+                    </div>
+                    <div class="window-body">
+                        <div class="terminal-copy">
+                            <p><span class="copy-label">STATUS:</span> Manage your habits and update progress from this dashboard.</p>
+                            <p><span class="copy-label">FLOW:</span> Add a habit, mark it complete, or remove it when it is no longer needed.</p>
+                            <p><span class="copy-label">TIP:</span> Press <kbd>ENTER</kbd> to add a habit quickly.</p>
+                        </div>
+                        <div class="ascii-divider" aria-hidden="true">============================================================</div>
+                        <div class="terminal-copy">
+                            <p><span class="copy-label">ACTIONS:</span></p>
+                            <p>`[ LOG HABIT ]` adds a new habit.</p>
+                            <p>`[ DONE ]` and `[ TODO ]` filter the list.</p>
+                            <p>`[ PURGE ]` removes a habit permanently.</p>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </main>
+    </div>
 
-        $.ajax({
-            url: `/api/habits/${id}/`,
-            type: "PUT",
-            data: JSON.stringify({ completed: completed }),
-            contentType: "application/json",
-            success: function() {
-                loadHabits();
-                loadDashboard();
-                loadChart();
-            }
-        });
-    });
-
-    // DELETE HABIT
-    $(document).on("click", ".deleteBtn", function() {
-        let id = $(this).data("id");
-
-        $.ajax({
-            url: `/api/habits/${id}/`,
-            type: "DELETE",
-            success: function() {
-                $("#messageBox").html('<div class="alert alert-danger">Habit deleted!</div>');
-                loadHabits();
-                loadDashboard();
-                loadChart();
-            }
-        });
-    });
-
-});
-</script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'tracker/app.js' %}"></script>
 </body>
 </html>

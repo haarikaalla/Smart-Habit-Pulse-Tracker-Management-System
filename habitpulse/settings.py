@@ -86,11 +86,22 @@ WSGI_APPLICATION = 'habitpulse.wsgi.application'
 database_url = os.environ.get("DATABASE_URL")
 
 DATABASES = {
+
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         ssl_require=bool(database_url),
     )
+
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'habitpulse_db',
+        'USER': 'habituser',
+        'PASSWORD': 'Root123*',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+
 }
 
 
@@ -129,7 +140,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'

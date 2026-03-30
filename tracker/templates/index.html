@@ -24,11 +24,47 @@
     </script>
 </head>
 <body>
+ main
     <div id="introScreen" class="intro-screen" aria-hidden="true">
         <div class="intro-panel">
             <div class="intro-bar">
                 <span>+-- BOOT_SEQUENCE --+</span>
                 <button id="skipIntroBtn" class="terminal-button subtle" type="button">[ SKIP ]</button>
+
+
+
+    <div class="container mt-5">
+
+
+<div class="d-flex justify-content-end mb-3">
+
+    <!-- LOGIN BUTTON -->
+    <a href="/login/" class="btn btn-outline-primary me-2">Login</a>
+
+    <!-- LOGOUT BUTTON (FIXED) -->
+    <form action="/logout/" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">Logout</button>
+    </form>
+
+</div>
+
+
+
+
+    <!-- DASHBOARD CARDS -->
+    <div class="row text-center mb-4">
+        <div class="col">
+            <div class="card p-3 bg-primary text-white">
+                <h5>Total</h5>
+                <h3 id="totalCount">0</h3>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card p-3 bg-success text-white">
+                <h5>Completed</h5>
+                <h3 id="completedCount">0</h3>
+
             </div>
             <div class="intro-body">
                 <pre class="intro-ascii" aria-hidden="true">
@@ -50,6 +86,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="screen-shell">
         <header class="window hero-window">
@@ -78,6 +115,71 @@
                         <span>[ HABIT LOG ]</span>
                         <span>[ DAILY PROGRESS ]</span>
                         <span>[ QUICK UPDATES ]</span>
+
+    <!-- ADD HABIT -->
+    <div class="card p-3 mb-3">
+        <input type="text" id="habitInput" class="form-control mb-2" placeholder="Enter habit">
+        <button id="addBtn" class="btn btn-primary">Add Habit</button>
+    </div>
+
+    <!-- MESSAGE BOX -->
+    <div id="messageBox" class="text-center mb-3"></div>
+
+    <!-- FILTER BUTTONS -->
+    <div class="mb-3 text-center">
+        <button class="btn btn-secondary filterBtn active" data-filter="all">All</button>
+        <button class="btn btn-success filterBtn" data-filter="completed">Completed</button>
+        <button class="btn btn-warning filterBtn" data-filter="pending">Pending</button>
+    </div>
+
+    <!-- HABIT LIST -->
+    <div id="habitList" class="list-group mb-4"></div>
+
+    <!-- PIE CHART -->
+    <div class="card p-3 mb-4">
+        <h5 class="text-center mb-3">Habit Completion Statistics</h5>
+        <canvas id="habitChart" width="400" height="400"></canvas>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>DESCRIBE tracker_habit;
+<script>
+
+let currentFilter = "all";
+
+// DASHBOARD COUNTS
+function loadDashboard() {
+    $.get("/api/dashboard/", function(data) {
+        $("#totalCount").text(data.total);
+        $("#completedCount").text(data.completed);
+        $("#pendingCount").text(data.pending);
+    });
+}
+
+// HABIT LIST
+function loadHabits() {
+    $.get("/api/habits/", function(data) {
+        $("#habitList").empty();
+        let visibleCount = 0;
+
+        data.forEach(habit => {
+            if (currentFilter === "completed" && !habit.completed) return;
+            if (currentFilter === "pending" && habit.completed) return;
+
+            visibleCount++;
+            let checked = habit.completed ? "checked" : "";
+
+            $("#habitList").append(`
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <input type="checkbox" class="completeCheckbox" data-id="${habit.id}" ${checked}>
+                        <span class="${habit.completed ? 'text-decoration-line-through' : ''}">
+                            ${habit.name}
+                        </span>
+                        <small class="text-muted ms-2">${habit.created_at}</small>
+
                     </div>
                 </div>
             </div>

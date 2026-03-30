@@ -304,14 +304,14 @@ function loadRandomQuote() {
     setQuoteLoading(true);
 
     $.ajax({
-        url: `https://zenquotes.io/api/random?ts=${Date.now()}`,
+        url: `https://dummyjson.com/quotes/random?ts=${Date.now()}`,
         method: "GET",
         timeout: 5000,
         success: function (data) {
-            if (Array.isArray(data) && data.length > 0 && data[0].q && data[0].a) {
+            if (data && data.quote && data.author) {
                 renderQuote({
-                    text: data[0].q,
-                    author: data[0].a
+                    text: data.quote,
+                    author: data.author
                 });
                 return;
             }

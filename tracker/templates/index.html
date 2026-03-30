@@ -6,9 +6,25 @@
 </head>
 <body>
 
-<div class="container mt-5">
 
-    <h2 class="text-center mb-4 text-primary">✨ HabitPulse Tracker</h2>
+    <div class="container mt-5">
+
+
+<div class="d-flex justify-content-end mb-3">
+
+    <!-- LOGIN BUTTON -->
+    <a href="/login/" class="btn btn-outline-primary me-2">Login</a>
+
+    <!-- LOGOUT BUTTON (FIXED) -->
+    <form action="/logout/" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">Logout</button>
+    </form>
+
+</div>
+
+
+
 
     <!-- DASHBOARD CARDS -->
     <div class="row text-center mb-4">
@@ -60,7 +76,7 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>DESCRIBE tracker_habit;
 <script>
 
 let currentFilter = "all";

@@ -1,11 +1,11 @@
 
 from django.urls import path
-from . import views
+from . import secure_views
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('add/', views.add_habit, name='add_habit'),
-    path('api/habits/', views.get_habits, name='get_habits'),
-    path('api/habits/<int:id>/', views.update_habit, name='update_habit'),
-    path('api/dashboard/', views.dashboard_data, name='dashboard'),
+    path('health/', secure_views.health, name='health'),
+    path('', secure_views.dashboard, name='home'),
+    path('api/v1/habits/', secure_views.habits, name='habits'),
+    path('api/v1/habits/<int:habit_id>/', secure_views.habit_detail, name='habit_detail'),
+    path('api/v1/summary/', secure_views.summary, name='summary'),
 ]

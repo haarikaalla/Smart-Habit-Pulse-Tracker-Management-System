@@ -1,4 +1,29 @@
-# Smart-Habit-Pulse-Tracker-Management-System
+# HabitPulse — secure multi-user habit operations
+
+> Modernization branch: authenticated per-user data, CSRF-protected JSON APIs,
+> environment-based configuration, validation, migrations, automated tests and CI.
+
+The original CRUD prototype remains in Git history. The current application is a
+small but production-conscious Django service: users can only access their own
+habits, secrets never live in source code, and every write is validated and
+protected by Django's session and CSRF controls.
+
+## Quick start
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Run `python manage.py test` for the authentication, ownership, CSRF and validation
+test suite. API routes are versioned under `/api/v1/`.
+
+## Legacy project description
 
 A full-stack web application built using Django that helps users track, manage, and monitor their daily habits efficiently. The system supports real-time updates using AJAX and follows RESTful API principles.
 

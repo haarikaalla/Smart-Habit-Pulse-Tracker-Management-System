@@ -1,0 +1,20 @@
+services:
+  web:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY}
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: postgres://habitpulse:${POSTGRES_PASSWORD}@db:5432/habitpulse
+    depends_on: [db]
+    command: sh -c "python manage.py migrate && gunicorn habitpulse.wsgi:application --bind 0.0.0.0:8000"
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: habitpulse
+      POSTGRES_USER: habitpulse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes: ["habitpulse-data:/var/lib/postgresql/data"]
+volumes:
+  habitpulse-data:

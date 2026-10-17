@@ -27,6 +27,11 @@ def _serialize(habit):
     }
 
 
+@require_http_methods(["GET"])
+def health(request):
+    return JsonResponse({"status": "ok", "service": "habitpulse", "api_version": "v1"})
+
+
 @login_required
 def dashboard(request):
     return render(request, "dashboard.html")

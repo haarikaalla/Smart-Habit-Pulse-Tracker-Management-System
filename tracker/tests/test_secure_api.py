@@ -29,6 +29,12 @@ class HabitApiTests(TestCase):
         response = self.client.get(reverse("habits"))
         self.assertEqual(response.status_code, 302)
 
+    def test_health_check_is_public(self):
+        self.client.logout()
+        response = self.client.get(reverse("health"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["status"], "ok")
+
     def test_create_and_list_habit(self):
         response = self.post_json(reverse("habits"), {"name": "Read", "target_per_week": 5})
         self.assertEqual(response.status_code, 201)

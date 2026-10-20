@@ -17,6 +17,9 @@ db.sqlite3
 
 # Logs
 *.log
+.coverage
+htmlcov/
+staticfiles/
 
 # OS files
 .DS_Store

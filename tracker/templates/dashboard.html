@@ -1,0 +1,155 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>HabitPulse · Make progress visible</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'tracker/dashboard.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="HabitPulse home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>Habit<span>Pulse</span></span>
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <a class="nav-item active" href="#overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z"/></svg>
+          Overview
+        </a>
+        <a class="nav-item" href="#habits">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 16.2-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5L9 16.2Z"/></svg>
+          My habits
+        </a>
+        <a class="nav-item" href="#insights">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.2h3V19H5V9.2Zm5.5-4h3V19h-3V5.2Zm5.5 7h3V19h-3v-6.8Z"/></svg>
+          Insights
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <p>Signed in as</p>
+        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+        <div class="account-actions">
+          <a href="{% url 'export_data' %}">Export data</a>
+          <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sign out</button></form>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="today-label">YOUR DAILY PULSE</p>
+          <h1>Good <span id="day-part">day</span>, {{ request.user.first_name|default:request.user.username }}.</h1>
+          <p class="subhead">Small actions compound. Let’s keep the rhythm going.</p>
+        </div>
+        <button class="primary-button" id="open-create" type="button">
+          <span aria-hidden="true">＋</span> New habit
+        </button>
+      </header>
+
+      <section class="stat-grid" aria-label="Progress summary">
+        <article class="stat-card accent-lilac">
+          <div class="stat-top"><span>Today</span><span class="stat-icon">✓</span></div>
+          <strong id="today-rate">0%</strong>
+          <p><b id="today-completed">0</b> of <span id="active-habits">0</span> habits complete</p>
+        </article>
+        <article class="stat-card accent-coral">
+          <div class="stat-top"><span>Weekly rhythm</span><span class="stat-icon">↗</span></div>
+          <strong id="weekly-rate">0%</strong>
+          <p><b id="weekly-count">0</b> check-ins toward your goals</p>
+        </article>
+        <article class="stat-card accent-mint">
+          <div class="stat-top"><span>Current streaks</span><span class="stat-icon">♨</span></div>
+          <strong><span id="current-streak">0</span><small> days</small></strong>
+          <p>Longest personal best: <b id="best-streak">0 days</b></p>
+        </article>
+        <article class="stat-card accent-sun">
+          <div class="stat-top"><span>Last 28 days</span><span class="stat-icon">●</span></div>
+          <strong id="period-checkins">0</strong>
+          <p>Total completed actions</p>
+        </article>
+      </section>
+
+      <section class="insight-grid" id="insights">
+        <article class="panel trend-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">MOMENTUM</p><h2>Weekly pulse</h2></div>
+            <span class="legend"><i></i> Completion rate</span>
+          </div>
+          <div class="trend-chart" id="trend-chart" aria-label="Seven-day completion chart"></div>
+        </article>
+        <article class="panel consistency-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">CONSISTENCY</p><h2>28-day rhythm</h2></div>
+            <span class="heat-legend">Less <i></i><i></i><i></i><i></i> More</span>
+          </div>
+          <div class="heatmap" id="heatmap" aria-label="28-day activity heatmap"></div>
+          <p class="insight-copy" id="insight-copy">Check in consistently to reveal your strongest rhythm.</p>
+        </article>
+      </section>
+
+      <section class="habits-section" id="habits">
+        <div class="section-heading">
+          <div><p class="eyebrow">YOUR SYSTEM</p><h2>Habits in motion</h2></div>
+          <div class="filters">
+            <label class="search-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 20-4.5-4.5m2.5-5A7.5 7.5 0 1 1 3 10.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+              <span class="sr-only">Search habits</span>
+              <input id="search" type="search" placeholder="Search habits…" autocomplete="off">
+            </label>
+            <label class="select-field"><span class="sr-only">Filter by category</span>
+              <select id="category-filter"><option value="">All categories</option>{% for value, label in categories %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select>
+            </label>
+          </div>
+        </div>
+        <div class="habit-grid" id="habit-list" aria-live="polite"></div>
+        <div class="empty-state" id="empty-state" hidden>
+          <span aria-hidden="true">◌</span>
+          <h3>Your next rhythm starts here</h3>
+          <p>Create a measurable habit and record your first check-in.</p>
+          <button class="primary-button" type="button" data-open-create>Create a habit</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="habit-dialog">
+    <form id="habit-form" method="dialog">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">BUILD YOUR SYSTEM</p><h2 id="dialog-title">Create a new habit</h2></div>
+        <button class="icon-button" id="close-dialog" type="button" aria-label="Close">×</button>
+      </div>
+      <input id="habit-id" type="hidden">
+      <input id="habit-version" type="hidden">
+      <label class="field full"><span>Habit name</span><input id="habit-name" maxlength="100" required placeholder="e.g. Read for 30 minutes"></label>
+      <label class="field full"><span>Why it matters</span><textarea id="habit-description" maxlength="280" rows="3" placeholder="Add a cue that keeps this habit meaningful"></textarea></label>
+      <div class="field-row">
+        <label class="field"><span>Category</span><select id="habit-category">{% for value, label in categories %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></label>
+        <label class="field"><span>Weekly target</span><select id="habit-target">{% for day in "1234567" %}<option value="{{ day }}"{% if day == "5" %} selected{% endif %}>{{ day }} day{% if day != "1" %}s{% endif %}</option>{% endfor %}</select></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>Reminder</span><input id="habit-reminder" type="time"></label>
+        <label class="field"><span>Accent color</span><input id="habit-color" type="color" value="#7C5CFC"></label>
+      </div>
+      <p class="form-error" id="form-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="cancel-dialog" type="button">Cancel</button>
+        <button class="primary-button" type="submit"><span id="submit-label">Create habit</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'tracker/dashboard.js' %}" defer></script>
+</body>
+</html>

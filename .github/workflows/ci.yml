@@ -29,17 +29,18 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - run: ruff check .
       - run: python manage.py makemigrations --check --dry-run
-        env: &django-env
+        env:
           SECRET_KEY: ci-only-secret-key-with-more-than-fifty-random-characters-123456
       - run: python manage.py check --deploy --fail-level WARNING
         env:
-          <<: *django-env
+          SECRET_KEY: ci-only-secret-key-with-more-than-fifty-random-characters-123456
           SECURE_SSL_REDIRECT: "true"
           SECURE_HSTS_SECONDS: "31536000"
           SESSION_COOKIE_SECURE: "true"
           CSRF_COOKIE_SECURE: "true"
       - run: coverage run manage.py test && coverage report
-        env: *django-env
+        env:
+          SECRET_KEY: ci-only-secret-key-with-more-than-fifty-random-characters-123456
 
   container:
     name: Production container
